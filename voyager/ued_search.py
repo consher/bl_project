@@ -67,6 +67,7 @@ class ued:
         self.medmad=medmad
     
     def search(self,nchans,sigma):
+        #nchans is number of frequency channels
         #searches nparray for a given sigma, if value > median + sigma * MAD it is counted as a hit
         nparray=self.nparray
         xarray=self.xarray
@@ -122,7 +123,3 @@ class ued:
         #plt.show()
         if(save==True):
             plt.savefig('hit_plot')
-
-inst=ued()
-inst.load_hits('hits')
-inst.plot_hits(save=True)
