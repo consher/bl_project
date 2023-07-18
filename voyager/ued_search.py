@@ -18,10 +18,10 @@ class ued:
         dataL=data_array['L']
         dataTI=(dataR)**2+(dataL)**2
 
-        nparry=np.array(dataTI)
+        nparray=np.array(dataTI)
 
         self.xarray=dataTI          #xarray maintains much more metadata than a numpy array so it is kept
-        self.nparray=nparry         #numpy array easier to work with so a copy is converted from xarray
+        self.nparray=nparray         #numpy array easier to work with so a copy is converted from xarray
 
 
     def medmad(self,nchans):
@@ -63,7 +63,6 @@ class ued:
         self.medmad=medmad
     
     def search(self,nchans,sigma):
-        #nchans is number of frequency channels
         #searches nparray for a given sigma, if value > median + sigma * MAD it is counted as a hit
         nparray=self.nparray
         xarray=self.xarray
@@ -73,7 +72,7 @@ class ued:
         #searches data and records location of all data above x sigma
         for j in range(nchans):
             for i in range(len(nparray)):
-                if nparray[i][j]>(medmad[j][0]+sigma*medmad[j][1]):
+                if nparray[i][j]>(medmad[j][0]+sigma*(medmad[j][1]*1.4826)):
                     hits.append([i,j])
 
         #converts hits from i,j position values to time,frequency coordinates for plotting
@@ -98,10 +97,10 @@ class ued:
     
     def load_hits(self,filename):
         #loads a previously saved .npy array
-        self.hits=np.load('{0}.npy'.format(filename),allow_pickle=True)
+        self.hits=np.load('{0}'.format(filename),allow_pickle=True)
 
 
-    def plot_hits(self,min_time='1986-01-19T00:00:03.900000000',max_time='1986-01-31T23:59:56.900000000',min_f=1.2,max_f=1326,save=False):
+    def plot_hits(self,min_time='1986-01-19T00:00:03.900000000',max_time='1986-01-31T23:59:56.900000000',min_f=1.2,max_f=1326,save=False,filename='hits_plot',show=False):
         #plots the good stuff
         #note for adding time axis limits must be in 'YYYY-MM-DDT00:00:00 where 00:00:00 is whatever time of the day and T is just a delimiter between the date and time
         hits=self.hits
@@ -116,6 +115,9 @@ class ued:
         plt.ylabel('frequency (Hz)')
         plt.ylim(min_f,max_f)                                             #minimum and maximum frequencies in Hz
         plt.xlim(np.datetime64(min_time),np.datetime64(max_time)  )       #min max times in datetime64
-        #plt.show()
+        
         if(save==True):
-            plt.savefig('hit_plot')
+            plt.savefig(filename)
+        elif(show==True):
+            plt.show()
+
