@@ -4,11 +4,7 @@ import numpy as np
 
 class ued:
     def __init__(self):
-        self.hits=None
-        self.xarray=None
-        self.nparray=None
-        self.medmad=None
-
+        pass
 
     def reader(self,lbl_file):
         #uses MASER library to read voyager data
