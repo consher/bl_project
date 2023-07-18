@@ -62,7 +62,7 @@ class ued:
             medmad.append([medians[i],mads[i]])
         self.medmad=medmad
     
-    def search(self,nchans,sigma,boxcar_size):
+    def search(self,nchans,npoints,sigma,boxcar_size):
         #searches nparray for a given sigma, if value > median + sigma * MAD it is counted as a hit
         nparray=self.nparray
         xarray=self.xarray
@@ -75,7 +75,6 @@ class ued:
                 if nparray[i][j]>(medmad[j][0]+sigma*(medmad[j][1]*1.4826)):
                     hits.append([i,j])
 
-        npoints=len() 
 
         for j in range(nchans):
             run_sum=0
