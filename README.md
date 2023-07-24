@@ -1,3 +1,1 @@
-BL 2023 Intern Project
-
-Lightning on Uranus
+BL 2023 Intern Project - Lightning on Uranus
