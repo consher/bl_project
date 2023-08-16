@@ -6,10 +6,12 @@ class ued:
     def __init__(self):
         pass
 
+
     def reader(self,lbl_file):
         #uses MASER library to read voyager data
         data=Data(filepath=lbl_file)
-
+        print(type(data))
+        return
         #uses xarray library to convert it to xarray
         data_array=data.as_xarray()
 
@@ -62,29 +64,22 @@ class ued:
             medmad.append([medians[i],mads[i]])
         self.medmad=medmad
     
-    def search(self,nchans,npoints,sigma,boxcar_size):
+
+    #search function is work in progress
+    def search(self,nchans,sigma):
         #searches nparray for a given sigma, if value > median + sigma * MAD it is counted as a hit
         nparray=self.nparray
         xarray=self.xarray
         medmad=self.medmad
         hits=[]
-
+        print('not working sorry :(')
+        pass
         #searches data and records location of all data above x sigma
-        for j in range(nchans):
-            for i in range(len(nparray)):
-                if nparray[i][j]>(medmad[j][0]+sigma*(medmad[j][1]*1.4826)):
-                    hits.append([i,j])
-
-
-        for j in range(nchans):
-            run_sum=0
-            i=0
-            while i<boxcar_size:
-                run_sum+=nparray[i]
-            
-            
-                
-
+        # for j in range(nchans):
+        #     for i in range(len(nparray)):
+        #         if nparray[i][j]>(medmad[j][0]+sigma*(medmad[j][1]*1.4826)):
+        #             hits.append([i,j])
+        
         #converts hits from i,j position values to time,frequency coordinates for plotting
         n=len(hits)
         p=0 #progress variable
@@ -100,11 +95,39 @@ class ued:
 
         self.hits=hits
 
+
+
+    def binning(self,series,nsamp,bin_size):
+        #takes a series and compiles it into bins of size bin_size and increments it along the series
+        npoints=nsamp-(bin_size-1)  #loses bin_size-1 samples after binning
+        
+        bin_series=np.zeros(npoints)
+        run_sum=0
+        i=0     #increment variable
+
+        #first bin
+        while i<bin_size:
+            run_sum+=series[i]
+            i+=1
+
+        i=bin_size
+
+        #every bin after that 
+        while i<npoints:
+            bin_series.append(run_sum)
+            run_sum+=series[i]
+            run_sum-=series[i-bin_size]
+            i+=1
+
+        self.bin_series=bin_series
+
+
     def save_hits(self,filename):
         #saves np array of hit locations to .npy file
         hits=self.hits
         np.save('{0}.npy'.format(filename),hits)
     
+
     def load_hits(self,filename):
         #loads a previously saved .npy array
         self.hits=np.load('{0}'.format(filename),allow_pickle=True)
@@ -131,3 +154,6 @@ class ued:
         elif(show==True):
             plt.show()
 
+lbl_file='VG2_URN_PRA_6SEC.LBL'
+inst=ued()
+inst.reader("VG2_URN_PRA_6SEC.LBL")
