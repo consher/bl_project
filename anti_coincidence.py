@@ -30,7 +30,7 @@ for i in range(0, hits1.shape[0]):      #iterates through each value of hit1 and
         if(hits1[i][j] == True):
 
                 if(err > 0):        
-                    #if the error margin is greater than 1
+                    #if the error margin is greater than 0
                     #it checks the box around hits1[i][j]
 
                     check = False
@@ -39,19 +39,21 @@ for i in range(0, hits1.shape[0]):      #iterates through each value of hit1 and
                         for q in range(-err, err + 1):
                             
                             if(hits1[i][j] == hits2[i + p][j + q]):
-                                check = True    
+                                check = True 
+                                break   #breaks inner (q) loop
                                 #if the box around hits1[i][j] contains a match check is True
 
                     #passes anti-coincidence test
-                    if(check == True):
-                        tally += 1
+                        if(check == True):
+                            tally += 1  
+                            break   #breask outer (p) loop
 
-                    #otheriwse sets both to false
-                    else:
+                    #otheriwse if check is False sets both to false
+                    if(check == False):
                         hits1[i][j] = False
                         hits2[i][j] = False        
 
-                #if the error value is 1, just compares the exact corresponding hits2 value
+                #if the error value is 0, just compares the exact corresponding hits2 value
                 elif(err == 0):
                     if(hits1[i][j] == hits2[i][j]):
                         tally += 1
